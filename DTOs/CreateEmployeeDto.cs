@@ -7,14 +7,14 @@ namespace EmployeesApi.DTOs
     {
         public required string Name { get; set; }
         public required string Surname { get; set; }
-        public int Age { get; set; }
+        public required int Age { get; set; }
         [EmailAddress]
         public string? Email { get; set; }
-        public int DepartmentId { get; set; }
+        public required int DepartmentId { get; set; }
         public required string Role { get; set; }
         public required string Phone { get; set; }
-        public DateTime HireDate { get; set; }
-        public decimal Salary { get; set; }
+        public required DateTime HireDate { get; set; }
+        public required decimal Salary { get; set; }
         public bool IsActive { get; set; }
     }
 }
