@@ -11,11 +11,9 @@ namespace EmployeesApi.Repository
     public class EmployeeRepository : IEmployeeRepository
     {
         private readonly ApplicationDbContext _db;
-        private readonly IMapper _mapper;
-        public EmployeeRepository(ApplicationDbContext db, IMapper mapper)
+        public EmployeeRepository(ApplicationDbContext db)
         {
             _db = db;
-            _mapper = mapper;
         }
 
         public async Task AddAsync(Employee employee)
@@ -43,20 +41,36 @@ namespace EmployeesApi.Repository
         //        : query.OrderBy(e => EF.Property<object>(e, prop.Name));
         //}
 
-        public async Task<PagedResult<Employee>> GetAllAsync(string? search = null, string? department = null, string? sortBy = "Id", string? sortDir = "asc", int page = 1, int pageSize = 10)
+        public async Task<PagedResult<Employee>> GetAllAsync(EmployeeSearch? search = null, string? sortBy = "Id", string? sortDir = "asc", int page = 1, int pageSize = 10)
         {
-            var query = _db.Employees.AsQueryable();
+            var query = _db.Employees.AsNoTracking().AsQueryable();
 
-            if (!string.IsNullOrWhiteSpace(search))
+            if (!string.IsNullOrWhiteSpace(search?.Name))
             {
-                var s = search.ToLower();
-                query = query.Where(e => (!string.IsNullOrEmpty(e.Name) && e.Name.ToLower().Contains(s)) || (!string.IsNullOrEmpty(e.Surname) && e.Surname.ToLower().Contains(s)));
+                var s = search.Name.ToLower();
+                query = query.Where(e => (!string.IsNullOrEmpty(e.Name) && e.Name.ToLower().Contains(s)));
             }
-
-            if (!string.IsNullOrWhiteSpace(department))
+            if (!string.IsNullOrWhiteSpace(search?.Surname))
             {
-                var d = department.ToLower();
-                query = query.Where(e => !string.IsNullOrEmpty(e.Department.Name) && e.Department.Name.ToLower() == d);
+                var s = search.Surname.ToLower();
+                query = query.Where(e => (!string.IsNullOrEmpty(e.Surname) && e.Surname.ToLower().Contains(s)));
+            }
+            if (!string.IsNullOrWhiteSpace(search?.Role))
+            {
+                var s = search.Role.ToLower();
+                query = query.Where(e => (!string.IsNullOrEmpty(e.Role) && e.Role.ToLower().Contains(s)));
+            }
+            if (search.DepartmentId.HasValue)
+            {
+                query = query.Where(e => e.DepartmentId == search.DepartmentId);
+            }
+            if (search.HireDateFrom.HasValue)
+            {
+                query = query.Where(e => e.HireDate >= search.HireDateFrom);
+            }
+            if (search.HireDateTo.HasValue)
+            {
+                query = query.Where(e => e.HireDate <= search.HireDateTo);
             }
 
             var totalCount = await query.CountAsync();
@@ -79,7 +93,7 @@ namespace EmployeesApi.Repository
 
         public async Task<int> GetCountAsync(string? search = null, string? department = null)
         {
-            var query = _db.Employees.AsQueryable();
+            var query = _db.Employees.AsNoTracking().AsQueryable();
 
             if(!string.IsNullOrWhiteSpace(search))
             {

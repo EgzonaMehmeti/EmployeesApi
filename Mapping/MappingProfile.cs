@@ -18,6 +18,10 @@ namespace EmployeesApi.Mapping
             CreateMap<EmployeeDto, Employee>();
             CreateMap<Department, DepartmentDto>();
             CreateMap<DepartmentDto, Department>();
+
+            CreateMap<EmployeeSearch, EmployeeSearchDto>();
+            CreateMap<EmployeeSearchDto, EmployeeSearch>();
+
             CreateMap(typeof(PagedResult<>), typeof(PagedResultDto<>));
         }
     }

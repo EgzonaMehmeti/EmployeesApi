@@ -21,8 +21,7 @@ namespace EmployeesApi.Controllers
         // GET: api/employees
         [HttpGet]
         public async Task<IActionResult> GetAll(
-            [FromQuery] string? search = null,
-            [FromQuery] string? department = null,
+            [FromQuery] EmployeeSearchDto? search = null,
             [FromQuery] string? sortBy = "Id",
             [FromQuery] string? sortDir = "asc",
             [FromQuery] int page = 1,
@@ -31,7 +30,7 @@ namespace EmployeesApi.Controllers
             if (page <= 0) page = 1;
             if (pageSize <= 0 || pageSize > 100) pageSize = 10;
 
-            var response = await _service.GetAllEmployeesAsync(search, department, sortBy, sortDir, page, pageSize);
+            var response = await _service.GetAllEmployeesAsync(search, sortBy, sortDir, page, pageSize);
 
             return Ok(response);
         }

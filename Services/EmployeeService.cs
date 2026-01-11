@@ -19,13 +19,16 @@ namespace EmployeesApi.Services
             _mapper = mapper;
         }
 
-        public async Task<PagedResultDto<EmployeeDto>> GetAllEmployeesAsync(string? search = null, string? department = null, string? sortBy = "Id", string? sortDir = "asc", int page = 1, int pageSize = 10)
+        public async Task<PagedResultDto<EmployeeDto>> GetAllEmployeesAsync(EmployeeSearchDto? search = null, string? sortBy = "Id", string? sortDir = "asc", int page = 1, int pageSize = 10)
         {
-            var employees = await _employeeRepository.GetAllAsync(search, department, sortBy, sortDir, page, pageSize);
+            var employeeSearch = _mapper.Map<Models.EmployeeSearch>(search);
+
+            var employees = await _employeeRepository.GetAllAsync(employeeSearch, sortBy, sortDir, page, pageSize);
+
 
             return new PagedResultDto<EmployeeDto>
             {
-                Items = employees.Items.Select(e => _mapper.Map<EmployeeDto>(e)),
+                Items = _mapper.Map<List<EmployeeDto>>(employees.Items),
                 TotalCount = employees.TotalCount,
                 Page = page,
                 PageSize = pageSize
@@ -61,16 +64,15 @@ namespace EmployeesApi.Services
             var employee = await _employeeRepository.GetByIdAsync(id);
             if (employee == null)
                 return false;
-            var department = await _departmentService.GetDepartmentByIdAsync(dto.DepartmentId);
 
-            if (department == null)
+            var departmentExists = await _departmentService.GetDepartmentByIdAsync(dto.DepartmentId);
+
+            if (departmentExists == null)
                 throw new ArgumentException("Invalid department ID");
 
-            if (dto?.DepartmentId != null)
-            {
-                employee.DepartmentId = dto.DepartmentId;
-            }
             _mapper.Map(dto, employee);
+
+            employee.DepartmentId = dto.DepartmentId;
 
             await _employeeRepository.UpdateAsync(employee);
 
