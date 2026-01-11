@@ -145,3 +145,4 @@ C:\Users\aaa\Desktop\Projects\EmployeeProject\EmployeesApi\EmployeesApi\obj\Debu
 C:\Users\aaa\Desktop\Projects\EmployeeProject\EmployeesApi\EmployeesApi\obj\Debug\net8.0\EmployeesApi.genruntimeconfig.cache
 C:\Users\aaa\Desktop\Projects\EmployeeProject\EmployeesApi\EmployeesApi\obj\Debug\net8.0\ref\EmployeesApi.dll
 C:\Users\aaa\Desktop\Projects\EmployeeProject\EmployeesApi\EmployeesApi\bin\Debug\net8.0\AutoMapper.dll
+C:\Users\aaa\Desktop\Projects\EmployeeProject\EmployeesApi\EmployeesApi\obj\Debug\net8.0\EmployeesApi.sourcelink.json
